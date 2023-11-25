@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { openSans } from "./fonts";
+import Navbar from "@/components/navbar";
 
 export const metadata: Metadata = {
   title: "Modern Engineers (India)",
@@ -17,6 +18,9 @@ export default function RootLayout({
       <body
         className={`${openSans.className} relative flex h-full flex-col overflow-x-hidden bg-slate-200`}
       >
+        <header>
+          <Navbar />
+        </header>
         <main className="mx-2 flex flex-grow pb-2 sm:mx-4 sm:pb-4">
           {children}
         </main>
