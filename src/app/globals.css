@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .hamburger-svg {
+    --hamburger-bezier: cubic-bezier(0.5, 1, 0.89, 1);
+  }
+  .hamburger__top-line,
+  .hamburger__bottom-line {
+    stroke-dasharray: 80 8000;
+    transition: 850ms var(--hamburger-bezier);
+  }
+  [data-open="true"] .hamburger__top-line,
+  [data-open="true"] .hamburger__bottom-line {
+    stroke-dashoffset: -150;
+  }
+}
