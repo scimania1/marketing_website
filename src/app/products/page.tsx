@@ -3,6 +3,7 @@ import { DEFAULT_LIMIT, DEFAULT_PAGE } from "@/utils/constants";
 import getProducts from "@/lib/mongodb/products";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { Suspense } from "react";
+import Paginate from "@/components/pagination";
 
 // TODO:
 // - [x] Make the padding-y larger
@@ -45,16 +46,11 @@ async function Cards({
   query: string;
 }) {
   const products = await getProducts(page, limit, query);
-  console.log(products[0].length);
   return (
     <>
       {products[0].productData.map((product) => (
         <div key={product.id}>{product.name}</div>
       ))}
-      <div>
-        Count of Queries:{" "}
-        {products[0].length.length === 0 ? 0 : products[0].length[0].count}
-      </div>
     </>
   );
 }
@@ -76,14 +72,15 @@ export default async function Page({
     typeof searchParams.query === "string" ? searchParams.query : "";
 
   return (
-    <div className="h-full flex-grow rounded-3xl bg-slate-100 px-4 py-6 sm:px-6 sm:py-8">
+    <div className="relative h-full flex-grow rounded-3xl bg-slate-100 px-4 py-6 sm:px-6 sm:py-8">
       {/*Here we are going to have a header*/}
       <ProductsHeader initialQuery={query} />
-      <Suspense fallback={<h1>Loading</h1>} key={query}>
+      <Suspense fallback={<h1>Loading</h1>}>
         <Cards page={page} limit={limit} query={query} />
       </Suspense>
       {/*Then have the Products*/}
       {/*Pagination*/}
+      <Paginate limit={limit} currentPage={page} query={query} />
     </div>
   );
 }
