@@ -6,15 +6,12 @@ const ProductDataSchema = z.object({
   id: z.number(),
   name: z.string(),
   sizes: z.array(z.string()),
-  subparts: z.array(
-    z.object({ name: z.string(), material: z.array(z.string()) }),
-  ),
   material: z.array(z.string()),
   finishing: z.array(z.string()),
   minQty: z.string(),
   hardening: z.string(),
   tags: z.array(z.string()),
-  imageURL: z.string(),
+  imageURL: z.string().url(),
 });
 
 export type ProductData = z.infer<typeof ProductDataSchema>;
