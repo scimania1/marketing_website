@@ -89,7 +89,7 @@ export function NavigationLinksDesktop() {
           {focusedIdx === idx && (
             <motion.div
               layoutId="bg-hover"
-              className="absolute inset-[-5px] z-[-10] rounded-lg bg-slate-200 md:inset-[-10px]"
+              className="absolute inset-[-5px] z-[-10] rounded-lg bg-slate-200/60 md:inset-[-10px]"
               transition={{
                 ease: "easeInOut",
                 duration: 0.2,
@@ -127,7 +127,7 @@ export function NavigationLinksMobile() {
         <HamburgerIcon />
       </button>
       <motion.ul
-        className="absolute left-0 right-0 top-0 z-10 flex h-screen translate-x-full flex-col justify-center gap-4 bg-slate-100"
+        className="absolute bottom-0 left-0 right-0 top-0 z-10 flex translate-x-full flex-col gap-4 bg-white pt-28"
         variants={hamburgerContainerVariants}
         initial={false}
         animate={isOpen ? "visible" : "hidden"}
@@ -137,7 +137,7 @@ export function NavigationLinksMobile() {
             key={link.url}
             variants={hamburgerLinkVariants}
             onClick={handleClick}
-            className="mx-8 text-5xl"
+            className="mx-auto text-3xl"
           >
             {/* TODO: add more personality to the links, use some icons, style on the basis of active links */}
             <Link href={link.url}>{link.name}</Link>
