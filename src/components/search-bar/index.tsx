@@ -8,6 +8,7 @@ import { useEffect, useRef, useState } from "react";
 
 export default function SearchBar({ initialQuery }: { initialQuery: string }) {
   const [query, setQuery] = useState(initialQuery);
+  const prevQuery = useRef(initialQuery);
   const debouncedQuery = useDebounce(query, 400);
 
   const router = useRouter();
@@ -27,16 +28,20 @@ export default function SearchBar({ initialQuery }: { initialQuery: string }) {
     } else {
       newParams.set("query", debouncedQuery);
     }
+    if (debouncedQuery !== prevQuery.current) {
+      newParams.set("page", "1");
+      prevQuery.current = debouncedQuery;
+    }
     router.push(createUrl("/products", newParams));
   }, [debouncedQuery, router, searchParams]);
 
   return (
     <div
-      className="flex flex-grow items-center gap-2 rounded-full bg-slate-200 py-3 pl-5 pr-6 focus-within:outline focus-within:outline-1 focus-within:outline-offset-4 focus-within:outline-black sm:flex-grow-0"
+      className="flex flex-grow items-center gap-2 rounded-full bg-slate-200 py-3 pl-5 pr-6 focus-within:outline focus-within:outline-1 focus-within:outline-black sm:flex-grow-0"
       role="searchbox"
     >
       <MagnifyingGlassIcon
-        className="h-6 w-6 stroke-slate-600 sm:h-9 sm:w-9"
+        className="h-6 w-6 stroke-slate-600 sm:h-6 sm:w-6"
         aria-label="search icon"
       />
       <input
