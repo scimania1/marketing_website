@@ -6,9 +6,8 @@ import {
   ChevronRightIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
+import Pagination from "./pagination-item";
 
-// rethink how to approach this
-// the code is all over the place right now
 function PaginateNumbers({
   currentPage,
   lastPage,
@@ -148,7 +147,7 @@ export default async function Paginate({
   // Maybe we can just use this because it is cached and we don't need its loading to be linked to the cards
   return (
     <div
-      className="absolute bottom-0 left-0 right-0 flex items-center justify-center rounded-3xl px-10 py-6 shadow-[0_-2px_13px_1px_hsla(0,0%,0%,0.03)] sm:justify-between"
+      className="z-10 flex items-center justify-center rounded-3xl bg-slate-50 px-10 py-6 shadow-[0_-2px_13px_1px_hsla(0,0%,0%,0.03)] sm:justify-between"
       aria-label="Pagination Component"
       aria-description="Pagination Bar"
     >
@@ -160,10 +159,10 @@ export default async function Paginate({
       </h3>
       {/*another that is the main pagination component*/}
       <div aria-label="Pagination button">
-        <PaginateButtons
+        <Pagination
+          totalPages={lastPage}
+          showControls={true}
           currentPage={currentPage}
-          lastPage={lastPage}
-          query={query}
         />
         {/* <h6>{`${products[0].productData[0]._id}`}</h6> */}
       </div>
