@@ -4,6 +4,7 @@ import getProducts from "@/lib/mongodb/products";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { Suspense } from "react";
 import Paginate from "@/components/pagination";
+import Image from "next/image";
 
 // TODO:
 // - [x] Make the padding-y larger
@@ -17,7 +18,7 @@ import Paginate from "@/components/pagination";
 
 function ProductsHeader({ initialQuery }: { initialQuery: string }) {
   return (
-    <div className="flex items-center justify-between">
+    <div className="flex items-center justify-between px-4 py-4">
       <h3 className="hidden text-2xl font-medium text-slate-700 sm:block sm:text-3xl lg:text-4xl">
         Products
       </h3>
@@ -49,7 +50,18 @@ async function Cards({
   return (
     <>
       {products[0].productData.map((product) => (
-        <div key={product.id}>{product.name}</div>
+        <div key={product.id}>
+          {/* <Image */}
+          {/*   src={product.imageURL} */}
+          {/*   height={100} */}
+          {/*   width={100} */}
+          {/*   alt={product.name} */}
+          {/* /> */}
+          <span>{product.id} </span>
+          {product.name.slice(0, 8)}
+          <br />
+          {product.name.slice(0, 8)}
+        </div>
       ))}
     </>
   );
@@ -58,7 +70,7 @@ async function Cards({
 export default async function Page({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: { page?: string; limit?: string; query?: string };
 }) {
   const page =
     typeof searchParams.page === "string"
@@ -72,15 +84,14 @@ export default async function Page({
     typeof searchParams.query === "string" ? searchParams.query : "";
 
   return (
-    <div className="relative h-full flex-grow rounded-3xl bg-slate-100 px-4 py-6 sm:px-6 sm:py-8">
-      {/*Here we are going to have a header*/}
+    <>
       <ProductsHeader initialQuery={query} />
-      <Suspense fallback={<h1>Loading</h1>}>
-        <Cards page={page} limit={limit} query={query} />
+      <Suspense key={query + `${page}`} fallback={<h1>Loading</h1>}>
+        <div className="flex-grow overflow-y-scroll">
+          <Cards page={page} limit={limit} query={query} />
+        </div>
       </Suspense>
-      {/*Then have the Products*/}
-      {/*Pagination*/}
       <Paginate limit={limit} currentPage={page} query={query} />
-    </div>
+    </>
   );
 }
