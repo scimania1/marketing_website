@@ -6,16 +6,6 @@ import { Suspense } from "react";
 import Paginate from "@/components/pagination";
 import Image from "next/image";
 
-// TODO:
-// - [x] Make the padding-y larger
-// - [ ] Make header sections for the products which has the word Products, search bar and an add Product Button
-// - [ ] Make the product Cards
-// - [ ] then create the update and add new product section
-
-// ISSUES:
-// - [x] decodeURIComponent issue
-// - [x] on route change, input query should be changed
-
 function ProductsHeader({ initialQuery }: { initialQuery: string }) {
   return (
     <div className="flex items-center justify-between px-4 py-4">
@@ -28,6 +18,7 @@ function ProductsHeader({ initialQuery }: { initialQuery: string }) {
           className="my-[2px] w-[3px] self-stretch rounded-full bg-slate-200"
           role="separator"
         ></div>
+        {/* TODO: Make this css better or something */}
         <button className="flex items-center gap-2 self-stretch rounded-full border border-solid border-gray-800 px-4 sm:px-4">
           <span className="hidden text-lg lg:block">Add New Product</span>
           <PlusIcon className="h-6 w-6 stroke-slate-800" />
@@ -35,6 +26,13 @@ function ProductsHeader({ initialQuery }: { initialQuery: string }) {
       </div>
     </div>
   );
+}
+
+/**
+ * @param {number} duration the time to wait
+ */
+function wait(duration: number) {
+  return new Promise((res) => setTimeout(res, duration));
 }
 
 async function Cards({
@@ -46,6 +44,7 @@ async function Cards({
   limit: number;
   query: string;
 }) {
+  await wait(1000);
   const products = await getProducts(page, limit, query);
   return (
     <>

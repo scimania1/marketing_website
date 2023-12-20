@@ -7,10 +7,8 @@ export default function ProductsLayout({
 }) {
   return (
     <main className="flex flex-grow overflow-y-hidden pb-2">
-      <div className="flex flex-grow">
-        <div className="relative flex h-full flex-grow flex-col rounded-3xl bg-slate-50">
-          <Suspense fallback={<h1>Loading</h1>}>{children}</Suspense>
-        </div>
+      <div className="relative flex h-full flex-grow flex-col rounded-3xl bg-slate-50 px-4 py-4">
+        <Suspense fallback={<h1>Loading</h1>}>{children}</Suspense>
       </div>
     </main>
   );

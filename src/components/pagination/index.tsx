@@ -8,125 +8,6 @@ import {
 import Link from "next/link";
 import Pagination from "./pagination-item";
 
-function PaginateNumbers({
-  currentPage,
-  lastPage,
-  query,
-}: {
-  currentPage: number;
-  lastPage: number;
-  query: string;
-}) {
-  const numberLimit = 5;
-  let paginateArray: number[] = [];
-  return (
-    <>
-      {paginateArray.map((page) => (
-        <Link
-          key={page}
-          href={{
-            pathname: "/products",
-            query: {
-              page: page,
-              query: query.length === 0 ? undefined : query,
-            },
-          }}
-        >
-          {page}
-        </Link>
-      ))}
-    </>
-  );
-}
-
-// the current page can just be passed as a prop from the parent
-function PaginateButtons({
-  currentPage,
-  lastPage,
-  query,
-}: {
-  currentPage: number;
-  lastPage: number;
-  query: string;
-}) {
-  return (
-    <>
-      <button
-        disabled={currentPage === 1}
-        className="group disabled:pointer-events-none"
-        aria-label="First Page Button"
-      >
-        <Link
-          href={{
-            pathname: "/products",
-            query: { page: 1, query: query.length === 0 ? undefined : query },
-          }}
-        >
-          <ChevronDoubleLeftIcon className="h-4 w-4 group-disabled:stroke-slate-400" />
-        </Link>
-      </button>
-      <button
-        disabled={currentPage === 1}
-        className="group disabled:pointer-events-none"
-        aria-label="Previous Page Button"
-      >
-        <Link
-          href={{
-            pathname: "/products",
-            query: {
-              page: currentPage - 1,
-              query: query.length === 0 ? undefined : query,
-            },
-          }}
-          prefetch={true}
-        >
-          <ChevronLeftIcon className="h-4 w-4 group-disabled:stroke-slate-400" />
-        </Link>
-      </button>
-      <PaginateNumbers
-        currentPage={currentPage}
-        query={query}
-        lastPage={lastPage}
-      />
-      <button
-        disabled={currentPage === lastPage}
-        className="group disabled:pointer-events-none"
-        aria-label="Next Page Button"
-      >
-        <Link
-          href={{
-            pathname: "/products",
-            query: {
-              page: currentPage + 1,
-              query: query.length === 0 ? undefined : query,
-            },
-          }}
-          prefetch={true}
-        >
-          <ChevronRightIcon className="h-4 w-4 group-disabled:stroke-slate-400" />
-        </Link>
-      </button>
-      <button
-        disabled={currentPage === lastPage}
-        className="group disabled:pointer-events-none"
-        aria-label="Last Page Button"
-      >
-        <Link
-          href={{
-            pathname: "/products",
-            query: {
-              page: lastPage,
-              query: query.length === 0 ? undefined : query,
-            },
-          }}
-        >
-          <ChevronDoubleRightIcon className="h-4 w-4 group-disabled:stroke-slate-400" />
-        </Link>
-      </button>
-    </>
-  );
-}
-
 export default async function Paginate({
   currentPage,
   limit,
@@ -147,7 +28,7 @@ export default async function Paginate({
   // Maybe we can just use this because it is cached and we don't need its loading to be linked to the cards
   return (
     <div
-      className="z-10 flex items-center justify-center rounded-3xl bg-slate-50 px-10 py-6 shadow-[0_-2px_13px_1px_hsla(0,0%,0%,0.03)] sm:justify-between"
+      className="absolute bottom-0 left-0 right-0 z-10 flex w-full items-center justify-center rounded-3xl bg-slate-50 px-10 py-6 shadow-[0_-2px_13px_1px_hsla(0,0%,0%,0.03)] sm:justify-between"
       aria-label="Pagination Component"
       aria-description="Pagination Bar"
     >
