@@ -15,4 +15,17 @@
   [data-open="true"] .hamburger__bottom-line {
     stroke-dashoffset: -150;
   }
+  .scrollbar-remove::-webkit-scrollbar {
+    width: 5px;
+  }
+  .scrollbar-remove {
+    scrollbar-width: 5px;
+    scrollbar-color: #94a3b8 #e2e8f0;
+  }
+  .scrollbar-remove::-webkit-scrollbar-thumb {
+    @apply rounded-lg bg-slate-400;
+  }
+  .scrollbar-remove::-webkit-scrollbar-track {
+    @apply bg-slate-200;
+  }
 }

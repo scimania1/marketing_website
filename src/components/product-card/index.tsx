@@ -2,21 +2,26 @@ import { ProductData } from "@/utils/types";
 import Image from "next/image";
 
 export default function ProductCard({
-  productData,
+  id,
+  name,
+  imageURL,
+  sizes,
 }: {
-  productData: ProductData;
+  id: number;
+  name: string;
+  imageURL: string;
+  sizes: string[];
 }) {
   return (
-    <div>
-      <picture>
-        <Image
-          src={productData.imageURL}
-          alt={productData.name}
-          height={100}
-          width={100}
-        />
-      </picture>
-      <h3>{productData.name}</h3>
+    <div className="grid rounded-xl border-2 border-slate-300 p-4">
+      <Image
+        src={imageURL}
+        alt={name}
+        width={300}
+        height={300}
+        className="h-44 w-full rounded-xl bg-slate-100 object-contain"
+      />
+      <h3>{name}</h3>
     </div>
   );
 }
