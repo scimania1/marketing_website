@@ -99,7 +99,7 @@ export function NavigationLinksDesktop() {
           {selectedIdx === idx && (
             <motion.div
               layoutId="underline"
-              className="absolute bottom-[-34px] left-[-5px] right-[-5px] h-[4px] rounded-sm bg-sky-700"
+              className="absolute bottom-[-34px] left-[-5px] right-[-5px] h-[4px] rounded-sm bg-blue-500"
               transition={{
                 duration: 0.3,
               }}
@@ -127,7 +127,7 @@ export function NavigationLinksMobile() {
         <HamburgerIcon />
       </button>
       <motion.ul
-        className="absolute bottom-0 left-0 right-0 top-0 z-10 flex translate-x-full flex-col gap-4 bg-white pt-28"
+        className="absolute bottom-0 left-0 right-0 top-0 z-20 flex translate-x-full flex-col gap-4 bg-white pt-28"
         variants={hamburgerContainerVariants}
         initial={false}
         animate={isOpen ? "visible" : "hidden"}

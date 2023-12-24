@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="overflow-x-hidden">
       <body
-        className={`${openSans.className} relative flex h-screen flex-col gap-4 overflow-x-hidden bg-slate-200/70 p-3`}
+        className={`${openSans.className} relative flex h-screen flex-col gap-2 overflow-x-hidden bg-slate-200/70 p-3 sm:gap-3`}
       >
         <header className="w-full">
           <Navbar />

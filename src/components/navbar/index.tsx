@@ -8,7 +8,7 @@ import {
 export default function Navbar() {
   return (
     <nav
-      className="flex flex-grow items-center justify-between rounded-3xl bg-white px-4 py-4 sm:px-8 md:px-14 lg:px-16"
+      className="flex flex-grow items-center justify-between rounded-2xl bg-white px-4 py-4 sm:rounded-3xl sm:px-8 md:px-14 lg:px-16"
       aria-label="main-menu"
     >
       <picture className="z-20">
