@@ -1,41 +1,33 @@
-import SearchBar from "@/components/search-bar";
 import { DEFAULT_LIMIT, DEFAULT_PAGE } from "@/utils/constants";
-import getProducts from "@/lib/mongodb/products";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import getProducts, { getTags } from "@/lib/mongodb/products";
 import { Suspense } from "react";
 import Paginate from "@/components/pagination";
-import Image from "next/image";
+import ProductCard from "@/components/product-card";
 
-function ProductsHeader({ initialQuery }: { initialQuery: string }) {
-  return (
-    <div className="flex items-center justify-between px-4 py-4">
-      <h3 className="hidden text-2xl font-medium text-slate-700 sm:block sm:text-3xl lg:text-4xl">
-        Products
-      </h3>
-      <div className="flex flex-grow items-center gap-4 sm:flex-grow-0">
-        <SearchBar initialQuery={initialQuery} />
-        <div
-          className="my-[2px] w-[3px] self-stretch rounded-full bg-slate-200"
-          role="separator"
-        ></div>
-        {/* TODO: Make this css better or something */}
-        <button className="flex items-center gap-2 self-stretch rounded-full border border-solid border-gray-800 px-4 sm:px-4">
-          <span className="hidden text-lg lg:block">Add New Product</span>
-          <PlusIcon className="h-6 w-6 stroke-slate-800" />
-        </button>
-      </div>
-    </div>
-  );
-}
-
-/**
- * @param {number} duration the time to wait
- */
 function wait(duration: number) {
   return new Promise((res) => setTimeout(res, duration));
 }
 
-async function Cards({
+async function Tags() {
+  const tags = await getTags();
+  return (
+    <div className="mb-4 grid grid-flow-col gap-2">
+      <div className="flex flex-nowrap gap-1 overflow-x-auto overflow-y-hidden whitespace-nowrap py-5">
+        {tags.map(
+          (tag, idx) =>
+            !!tag && (
+              <span key={idx} className="flex-grow bg-slate-100">
+                {`"${tag}"`}{" "}
+              </span>
+            ),
+        )}
+      </div>
+      <button>Sort the fields</button>
+    </div>
+  );
+}
+
+async function ProductGrid({
   page,
   limit,
   query,
@@ -44,32 +36,35 @@ async function Cards({
   limit: number;
   query: string;
 }) {
-  await wait(1000);
+  // await wait(1000);
   const products = await getProducts(page, limit, query);
+  if (products[0].productData.length === 0) {
+    return <h2>No results Found</h2>;
+  }
   return (
-    <>
+    <div className="grid gap-4 px-2 sm:grid-cols-2 sm:px-3 md:grid-cols-3 md:px-4 lg:grid-cols-4">
       {products[0].productData.map((product) => (
-        <div key={product.id}>
-          {/* <Image */}
-          {/*   src={product.imageURL} */}
-          {/*   height={100} */}
-          {/*   width={100} */}
-          {/*   alt={product.name} */}
-          {/* /> */}
-          <span>{product.id} </span>
-          {product.name.slice(0, 8)}
-          <br />
-          {product.name.slice(0, 8)}
-        </div>
+        <ProductCard
+          key={`${product.id}${product.name}`}
+          id={product.id}
+          name={product.name}
+          imageURL={product.imageURL}
+          sizes={product.sizes}
+        />
       ))}
-    </>
+    </div>
   );
 }
 
-export default async function Page({
+export default function Page({
   searchParams,
 }: {
-  searchParams: { page?: string; limit?: string; query?: string };
+  searchParams: {
+    page?: string;
+    limit?: string;
+    query?: string;
+    category?: string;
+  };
 }) {
   const page =
     typeof searchParams.page === "string"
@@ -81,13 +76,15 @@ export default async function Page({
       : DEFAULT_LIMIT;
   const query =
     typeof searchParams.query === "string" ? searchParams.query : "";
+  const category =
+    typeof searchParams.category === "string" ? searchParams.category : "";
 
   return (
     <>
-      <ProductsHeader initialQuery={query} />
+      <Tags />
       <Suspense key={query + `${page}`} fallback={<h1>Loading</h1>}>
-        <div className="flex-grow overflow-y-scroll">
-          <Cards page={page} limit={limit} query={query} />
+        <div className="scrollbar-remove flex-grow overflow-y-auto">
+          <ProductGrid page={page} limit={limit} query={query} />
         </div>
       </Suspense>
       <Paginate limit={limit} currentPage={page} query={query} />

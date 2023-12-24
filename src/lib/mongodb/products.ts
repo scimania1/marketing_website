@@ -40,8 +40,9 @@ const getProducts = cache(
         $facet: {
           productData: [
             { $skip: skipVal },
-            { $limit: limit },
             { $sort: { id: 1 } },
+            { $limit: limit },
+            { $project: { id: 1, name: 1, imageURL: 1, sizes: 1 } },
           ],
           length: [{ $count: "count" }],
         },
@@ -50,12 +51,13 @@ const getProducts = cache(
     if (query.length !== 0) {
       pipeline.unshift({
         $search: {
-          index: "default",
-          text: {
+          index: "searchProducts",
+          autocomplete: {
             query: query,
-            path: ["name", "sizes", "subparts", "material", "finishing"],
-            fuzzy: {},
+            path: "name",
           },
+          sort: { id: 1 },
+          returnStoredSource: true,
         },
       });
       pipeline[1].$facet.productData.pop();
@@ -71,3 +73,10 @@ export default getProducts;
 
 // need to improve the way i query the data.
 // read about mongodb and some querying techniques and other flags to be used. May don't use aggregation. May be use $facet.
+export const getTags = cache(async () => {
+  if (!productsCollection) {
+    await initConnection();
+  }
+  const result = productsCollection.distinct("tags");
+  return result;
+});
