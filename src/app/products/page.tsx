@@ -43,15 +43,18 @@ async function ProductGrid({
   }
   return (
     <div className="grid gap-4 px-2 sm:grid-cols-2 sm:px-3 md:grid-cols-3 md:px-4 lg:grid-cols-4">
-      {products[0].productData.map((product) => (
-        <ProductCard
-          key={`${product.id}${product.name}`}
-          id={product.id}
-          name={product.name}
-          imageURL={product.imageURL}
-          sizes={product.sizes}
-        />
-      ))}
+      {products[0].productData.map((product) => {
+        console.log(product);
+        return (
+          <ProductCard
+            key={`${product.id}${product.name}`}
+            id={product.id}
+            name={product.name}
+            imageURL={product.imageURL}
+            sizes={product.sizes}
+          />
+        );
+      })}
     </div>
   );
 }

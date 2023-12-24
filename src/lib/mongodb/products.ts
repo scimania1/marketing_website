@@ -39,8 +39,8 @@ const getProducts = cache(
       {
         $facet: {
           productData: [
-            { $skip: skipVal },
             { $sort: { id: 1 } },
+            { $skip: skipVal },
             { $limit: limit },
             { $project: { id: 1, name: 1, imageURL: 1, sizes: 1 } },
           ],
