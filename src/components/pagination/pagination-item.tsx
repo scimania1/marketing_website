@@ -1,3 +1,15 @@
+"use client";
+import createUrl from "@/utils/createUrl";
+import {
+  ChevronDoubleLeftIcon,
+  ChevronDoubleRightIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  EllipsisHorizontalIcon,
+} from "@heroicons/react/24/outline";
+import { usePathname, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+
 export enum PaginationItem {
   DOTS = "dots",
   NEXT = "next",
@@ -63,7 +75,7 @@ function getRange(
   const rightDotsVisible = totalPages - boundaries + 1 - rightSiblingIdx > 2;
 
   if (leftDotsVisible && !rightDotsVisible) {
-    const rightCount = arraySize - boundaries;
+    const rightCount = arraySize - boundaries - 1;
     return [
       ...range(1, boundaries),
       PaginationItem.DOTS,
@@ -89,6 +101,144 @@ function getRange(
   ];
 }
 
+function PaginateButton({
+  paginationItemValue,
+  currentPage,
+  totalPages,
+  idx,
+  boundaries,
+  showControls,
+  length,
+}: {
+  paginationItemValue: PaginationItemValue;
+  currentPage: number;
+  totalPages: number;
+  idx: number;
+  boundaries: number;
+  showControls: boolean;
+  length: number;
+}) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const handlePrevClick = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", `${currentPage - 1}`);
+    router.push(createUrl(pathname, params));
+  };
+  const handleNextClick = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", `${currentPage + 1}`);
+    router.push(createUrl(pathname, params));
+  };
+  const handlePageClick = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", `${page}`);
+    router.push(createUrl(pathname, params));
+  };
+  const handleDotsLeft = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", `${currentPage - Math.floor(totalPages / 2)}`);
+    router.push(createUrl(pathname, params));
+  };
+  const handleDotsRight = () => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", `${currentPage + Math.floor(totalPages / 2)}`);
+    router.push(createUrl(pathname, params));
+  };
+  if (paginationItemValue === PaginationItem.PREV) {
+    const isDisabled = currentPage === 1;
+    return (
+      <li
+        role="button"
+        aria-label="previous page button"
+        aria-disabled={isDisabled}
+        tabIndex={isDisabled ? -1 : 0}
+        onClick={handlePrevClick}
+        className={`flex h-7 w-7 items-center justify-center sm:h-9 sm:w-9${
+          isDisabled ? " pointer-events-none" : ""
+        }`}
+      >
+        <ChevronLeftIcon
+          className={`h-4 w-4 ${
+            isDisabled ? "stroke-slate-300" : "stroke-slate-700"
+          }`}
+        />
+      </li>
+    );
+  }
+  if (paginationItemValue === PaginationItem.NEXT) {
+    const isDisabled = currentPage === totalPages;
+    return (
+      <li
+        role="button"
+        aria-label="next page button"
+        aria-disabled={isDisabled}
+        tabIndex={isDisabled ? -1 : 0}
+        onClick={handleNextClick}
+        className={`flex h-7 w-7 items-center justify-center sm:h-9 sm:w-9${
+          isDisabled ? " pointer-events-none" : ""
+        }`}
+      >
+        <ChevronRightIcon
+          className={`h-4 w-4 ${
+            isDisabled ? "stroke-slate-300" : "stroke-slate-700"
+          }`}
+        />
+      </li>
+    );
+  }
+  if (paginationItemValue === PaginationItem.DOTS) {
+    if (idx - boundaries === Number(showControls)) {
+      return (
+        <li
+          role="button"
+          aria-label="skip ahead"
+          className="group flex h-7 w-7 items-center justify-center rounded-lg bg-slate-200 transition-colors duration-300 hover:bg-slate-300 sm:h-9 sm:w-9"
+          onClick={handleDotsLeft}
+          tabIndex={0}
+        >
+          <EllipsisHorizontalIcon className="h-4 w-4 stroke-slate-700 group-hover:hidden" />
+          <ChevronDoubleLeftIcon className="hidden h-4 w-4 stroke-slate-700 group-hover:block" />
+        </li>
+      );
+    } else {
+      return (
+        <li
+          role="button"
+          aria-label="skip ahead"
+          onClick={handleDotsRight}
+          className="group flex h-7 w-7 items-center justify-center rounded-lg bg-slate-200 transition-colors duration-300 hover:bg-slate-300 sm:h-9 sm:w-9"
+          tabIndex={0}
+        >
+          <EllipsisHorizontalIcon className="h-4 w-4 stroke-slate-700 group-hover:hidden" />
+          {idx - boundaries === Number(showControls) && (
+            <ChevronDoubleLeftIcon className="hidden h-4 w-4 stroke-slate-700 group-hover:block" />
+          )}
+          {idx + boundaries === length - Number(showControls) - 1 && (
+            <ChevronDoubleRightIcon className="hidden h-4 w-4 stroke-slate-700 group-hover:block" />
+          )}
+        </li>
+      );
+    }
+  }
+  return (
+    <li
+      role="button"
+      aria-label={`go to page ${paginationItemValue}`}
+      onClick={() => handlePageClick(paginationItemValue)}
+      tabIndex={0}
+      className={`flex h-7 w-7 items-center justify-center rounded-lg transition-colors duration-300 sm:h-9 sm:w-9 ${
+        paginationItemValue === currentPage
+          ? "bg-blue-500 text-white"
+          : "bg-slate-200 hover:bg-slate-300"
+      }`}
+    >
+      {paginationItemValue}
+    </li>
+  );
+}
+
 // this function needs to return the paginationArray
 export default function Pagination(props: PaginationProps) {
   // so let the total number of pages to be displayed be 8
@@ -105,10 +255,19 @@ export default function Pagination(props: PaginationProps) {
   }
   // rendering logic
   return (
-    <div>
-      {arr.map((val) => (
-        <span key={val}>{val} </span>
+    <ul className="flex list-none gap-1 text-xs sm:text-sm">
+      {arr.map((val, idx) => (
+        <PaginateButton
+          key={idx}
+          showControls={showControls}
+          paginationItemValue={val}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          idx={idx}
+          boundaries={boundaries}
+          length={arr.length}
+        />
       ))}
-    </div>
+    </ul>
   );
 }
